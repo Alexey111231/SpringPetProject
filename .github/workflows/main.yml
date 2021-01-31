@@ -19,3 +19,18 @@ jobs:
           java-version: 1.14
       - name: Maven Verify
         run: mvn -B clean verify
+      - uses: actions/checkout@master
+      - name: send succes message
+        if:  ${{ success() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          args: build success
+      - name: send fail message
+        if:  ${{ failure() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          args: build fail
