@@ -11,9 +11,6 @@ import ru.vk.sladkiipirojok.model.Message;
 import ru.vk.sladkiipirojok.model.User;
 import ru.vk.sladkiipirojok.repository.MessagesRepository;
 
-import java.util.Iterator;
-import java.util.List;
-
 @Controller
 public class MainController {
     @Autowired
@@ -33,8 +30,8 @@ public class MainController {
 
     @PostMapping("/main")
     public String add(@AuthenticationPrincipal User user,
-            @RequestParam String text,
-            @RequestParam String tag,
+                      @RequestParam String text,
+                      @RequestParam String tag,
                       Model model) {
         Message message = new Message(text, tag, user);
 
