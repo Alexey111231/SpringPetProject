@@ -2,6 +2,9 @@ package ru.vk.sladkiipirojok;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+import java.applet.AppletContext;
 
 @SpringBootApplication
 public class Application {
