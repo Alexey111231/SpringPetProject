@@ -12,6 +12,7 @@
 
         <title>Title</title>
         <link rel="stylesheet" href="/static/style.css"/>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
     <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
