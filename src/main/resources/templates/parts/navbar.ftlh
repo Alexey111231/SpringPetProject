@@ -18,6 +18,11 @@
                         <a class="nav-link active" aria-current="page" href="/user">User list</a>
                     </li>
                 </#if>
+                <#if user??>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/user/profile">Profile</a>
+                    </li>
+                </#if>
             </ul>
         </div>
         <div class="navbar-text mr-5">${name}</div>

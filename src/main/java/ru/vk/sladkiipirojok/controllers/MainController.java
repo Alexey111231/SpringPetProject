@@ -2,9 +2,12 @@ package ru.vk.sladkiipirojok.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,9 +16,13 @@ import ru.vk.sladkiipirojok.model.Message;
 import ru.vk.sladkiipirojok.model.User;
 import ru.vk.sladkiipirojok.repository.MessagesRepository;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -47,28 +54,35 @@ public class MainController {
 
     @PostMapping("/main")
     public String add(@AuthenticationPrincipal User user,
-                      @RequestParam String text,
-                      @RequestParam String tag,
+                      @Valid Message message,
+                      BindingResult bindingResult,
                       @RequestParam("file") MultipartFile file,
                       Model model) throws IOException {
-        Message message = new Message(text, tag, user);
+        message.setAuthor(user);
 
-        if (file != null && !file.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = ControllerUtils.getErrorMap(bindingResult);
+            model.mergeAttributes(errorsMap);
+            System.out.println(errorsMap);
+            model.addAttribute("message", message);
+        } else {
+            if (file != null && !file.getOriginalFilename().isEmpty()) {
+                File uploadDir = new File(uploadPath);
 
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdir();
+                }
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFilename = uuidFile + "." + file.getOriginalFilename();
+                file.transferTo(new File(uploadPath + "/" + resultFilename));
+                message.setFilename(resultFilename);
             }
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-            message.setFilename(resultFilename);
+
+            messagesRepository.save(message);
         }
-
-        messagesRepository.save(message);
-
         Iterable<Message> messages = messagesRepository.findAll();
 
+        model.addAttribute("message", null);
         model.addAttribute("messages", messages);
         return "main";
     }
