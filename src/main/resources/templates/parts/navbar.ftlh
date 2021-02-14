@@ -22,6 +22,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/user/profile">Profile</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/user-messages/${currentUserId}">My messages</a>
+                    </li>
                 </#if>
             </ul>
         </div>
